@@ -7,22 +7,25 @@
 #define EXPORT __declspec(dllimport)
 #endif
 
+typedef unsigned __int64 uint;
+
 class EXPORT Allocator
 {
 private:
-	char* block;
+	uint* block;
 	size_t size;
-	size_t CurrSize;
+	size_t BlockSize;
+	size_t usedSpace;
 	bool empty;
 public:
-	Allocator();
+	Allocator(size_t size, size_t BlockSize = 8);
 	virtual ~Allocator();
 
-	char* MyMalloc(int memSize);
+	char* MyMalloc(const int memSize);
 	void MyFree(void* p);
 private:
-	bool isAllocated(char* p);
+	inline bool isAllocated(uint* p);
 public:
-	bool isEmpty();
+	inline bool isEmpty();
 };
 
