@@ -55,6 +55,7 @@ namespace Allocator_TEST
 			foo[0] = 1;
 
 			a.MyFree(foo);
+
 			Assert::IsTrue(a.isEmpty());
 		}
 
@@ -68,7 +69,7 @@ namespace Allocator_TEST
 
 		TEST_METHOD(Allocate_multiple_times)
 		{
-			Allocator a(100 * sizeof(double));
+			Allocator a(100);
 
 			double* foo = (double*)a.MyMalloc(30 * sizeof(double));
 			int* bar = (int*)a.MyMalloc(6 * sizeof(int));
@@ -77,6 +78,35 @@ namespace Allocator_TEST
 			Assert::IsNotNull(foo);
 			Assert::IsNotNull(bar);
 			Assert::IsNotNull(aliBaba);
+		}
+
+		TEST_METHOD(Allocate_max_memory)
+		{
+			Allocator a(100);
+
+			double* foo = (double*)a.MyMalloc(95 * sizeof(double));
+			double* bar = (double*)a.MyMalloc(sizeof(double));
+
+			Assert::IsNotNull(foo);
+			Assert::IsNotNull(bar);
+
+		}
+
+		TEST_METHOD(Allocate_and_del_multiple_times)
+		{
+			Allocator a(100);
+
+			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
+			int* bar = (int*)a.MyMalloc(6 * sizeof(int));
+			short* aliBaba = (short*)a.MyMalloc(3 * sizeof(short));
+			char* Alladin = a.MyMalloc(8 * sizeof(char));
+
+			a.MyFree(foo);
+			a.MyFree(aliBaba);
+			a.MyFree(Alladin);
+			a.MyFree(bar);
+
+			Assert::IsTrue(a.isEmpty());
 		}
 	};
 }

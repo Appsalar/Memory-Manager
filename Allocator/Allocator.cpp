@@ -35,7 +35,7 @@ char* Allocator::MyMalloc(const int memSize)
 	size_t totalMemory = memSize / BlockSize + adjustment;
 
 	//Check if there is enough memory 
-	if (totalMemory * sizeof(uint) > size - usedSpace)
+	if ((memSize / BlockSize) * sizeof(uint) > size - usedSpace)
 		return NULL;
 
 	size_t indexMem = size / HEADER;
@@ -54,12 +54,25 @@ char* Allocator::MyMalloc(const int memSize)
 				i += (size_t)block[i] / HEADER;
 			else
 			{
-				uint oldMem = block[i];
-				block[i] = totalMemory * HEADER + 1;
-				block[i + totalMemory - 1] = totalMemory * HEADER + 1;
+				if (empty)
+					empty = false;
 
-				block[i + totalMemory] = oldMem - totalMemory * HEADER;
-				block[i + oldMem / HEADER - 1] = oldMem - totalMemory * HEADER;
+				if (block[i] - totalMemory * HEADER <= 2 * HEADER)
+				{
+					usedSpace += block[i] - 2 * HEADER;
+					++block[i];
+					++block[i + totalMemory - 1];
+				}
+				else
+				{
+					usedSpace += totalMemory * HEADER;
+					uint oldMem = block[i];
+					block[i] = totalMemory * HEADER + 1;
+					block[i + totalMemory - 1] = totalMemory * HEADER + 1;
+
+					block[i + totalMemory] = oldMem - totalMemory * HEADER;
+					block[i + oldMem / HEADER - 1] = oldMem - totalMemory * HEADER;
+				}
 				return (char*)(&block[i + 1]);
 			}
 		}
@@ -71,7 +84,48 @@ char* Allocator::MyMalloc(const int memSize)
 
 void Allocator::MyFree(void* p)
 {
-	throw "360 no skope";
+	uint* foo = (uint*)p;
+	if (!p)
+		return;
+
+	if (!isAllocated(foo - 1) || !isAllocated(foo - 1 + *(foo - 1) / sizeof(uint)-1))
+		throw "360 no skope";
+
+	*(foo - 1) -= 1;
+	*(foo - 1 + *(foo - 1) / sizeof(uint)-1) -= 1;
+	usedSpace -= *(foo - 1) - 2 * HEADER;
+
+	uint* bar = foo;
+
+	if (!isAllocated(foo - 2) && foo - 1 != block)
+	{
+		//Put the size of the new block at the start of it
+		*(foo - *(foo - 2) / sizeof(uint)-1) += *(foo - 1);
+
+		//Put the size of the new block at the end of it
+		*(foo - 1 + *(foo - 1) / sizeof(uint)-1) = *(foo - *(foo - 2) / sizeof(uint)-1);
+
+		//Get a pointer to the new start
+		bar = foo - *(foo - 2) / sizeof(uint)-1;
+		usedSpace -= 2 * HEADER;
+	}
+
+	if (!isAllocated(foo - 1 + *(foo - 1) / sizeof(uint))
+		&& foo - 1 + *(foo - 1) / sizeof(uint)-1 != block + size - 1)
+	{
+		//Get the size of the next empty block
+		uint newTail = *(foo - 1 + *(foo - 1) / sizeof(uint)) / sizeof(uint);
+
+		//Put the size of the new block at the end of it
+		*(foo - 1 + *(foo - 1) / sizeof(uint)+newTail - 1) += *bar;
+
+		//Put the size of the new block at the start of it
+		*bar = *(foo - 1 + *(foo - 1) / sizeof(uint)+newTail - 1);
+		usedSpace -= 2 * HEADER;
+	}
+
+	if (usedSpace == 2 * HEADER)
+		empty = true;
 }
 
 
