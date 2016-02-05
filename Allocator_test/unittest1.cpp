@@ -89,7 +89,6 @@ namespace Allocator_TEST
 
 			Assert::IsNotNull(foo);
 			Assert::IsNotNull(bar);
-
 		}
 
 		TEST_METHOD(Allocate_and_del_multiple_times)
@@ -107,6 +106,18 @@ namespace Allocator_TEST
 			a.MyFree(bar);
 
 			Assert::IsTrue(a.isEmpty());
+		}
+
+		TEST_METHOD(Allocate__del_allocate)
+		{
+			Allocator a(100);
+
+			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
+			a.MyFree(foo);
+
+			int* bar = (int*)a.MyMalloc(87 * sizeof(int));
+
+			Assert::IsNotNull(bar);
 		}
 	};
 }

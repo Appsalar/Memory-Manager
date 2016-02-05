@@ -17,6 +17,7 @@ private:
 	size_t BlockSize;
 	size_t usedSpace;
 	bool empty;
+	size_t firstFree;
 public:
 	Allocator(size_t size, size_t BlockSize = 8);
 	virtual ~Allocator();
