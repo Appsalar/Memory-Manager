@@ -23,7 +23,10 @@ public:
 };
 
 
-
+//if invalid argument or no space
+//return NULL 
 BOSS_API void* MyMalloc(const int memSize);
 
+//if invalid argument 
+//undefined behavior
 BOSS_API void MyFree(void* p);

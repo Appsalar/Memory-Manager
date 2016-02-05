@@ -30,8 +30,17 @@ public:
 	//undefined behavior
 	void MyFree(void* p);
 
+	//if the allocator is empty
+	//return true
 	inline bool isEmpty();
+
+	//if a pointer could be
+	//from that allocator
+	//return true
 	inline bool isFromMe(void* p);
+
+	//if the allocator is full
+	//return true
 	inline bool isFull();
 private:
 	inline bool isAllocated(uint* p);
