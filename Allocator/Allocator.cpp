@@ -3,7 +3,7 @@
 
 #define HEADER sizeof(uint)
 
-#define LAST size / sizeof(uint)
+#define LAST this->size / sizeof(uint)
 
 //Creating allocator with capacity of
 //size * sizeof(double) bites
@@ -175,7 +175,7 @@ void Allocator::MyFree(void* p)
 		usedSpace -= 2 * HEADER;
 
 		pStart[2] = next;
-		if (pStart == pTarget)
+		if (pStart == pTarget - 1)
 		{
 			pStart[1] = prev;
 			if (prev != 0)
@@ -183,7 +183,7 @@ void Allocator::MyFree(void* p)
 				block[prev + 2] = pStart[0];
 			}
 			else
-				firstFree = pStart[0];
+				firstFree = 0;
 		}
 
 		//Attach the next free block to this

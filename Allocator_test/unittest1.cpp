@@ -42,9 +42,6 @@ namespace Allocator_TEST
 
 			for (size_t i = 0; i < 5; ++i)
 				Assert::AreEqual(foo[i], (double)i);
-
-			/*for (size_t i = 0; i < 6; ++i)
-				Assert::AreEqual(bar[i], (int)i * 10);*/
 		}
 
 		TEST_METHOD(Allocate_and_delete)
@@ -84,18 +81,16 @@ namespace Allocator_TEST
 		{
 			Allocator a(100);
 
-			double* foo = (double*)a.MyMalloc(95 * sizeof(double));
-			double* bar = (double*)a.MyMalloc(sizeof(double));
+			double* foo = (double*)a.MyMalloc(98 * sizeof(double));
 
 			Assert::IsNotNull(foo);
-			Assert::IsNotNull(bar);
 		}
 
 		TEST_METHOD(Allocate_and_del_multiple_times)
 		{
 			Allocator a(100);
 
-			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
+			double* foo = (double*)a.MyMalloc(80 * sizeof(double));
 			int* bar = (int*)a.MyMalloc(6 * sizeof(int));
 			short* aliBaba = (short*)a.MyMalloc(3 * sizeof(short));
 			char* Alladin = a.MyMalloc(8 * sizeof(char));
@@ -112,10 +107,10 @@ namespace Allocator_TEST
 		{
 			Allocator a(100);
 
-			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
+			double* foo = (double*)a.MyMalloc(85 * sizeof(double));
 			a.MyFree(foo);
 
-			int* bar = (int*)a.MyMalloc(87 * sizeof(int));
+			int* bar = (int*)a.MyMalloc(85 * sizeof(int));
 
 			Assert::IsNotNull(bar);
 		}
