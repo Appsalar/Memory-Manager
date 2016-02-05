@@ -90,6 +90,7 @@ namespace Allocator_TEST
 			Assert::IsNotNull(foo);
 			Assert::IsNotNull(bar);
 
+			Assert::IsTrue(a.isFull());
 		}
 
 		TEST_METHOD(Allocate_and_del_multiple_times)
@@ -99,7 +100,7 @@ namespace Allocator_TEST
 			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
 			int* bar = (int*)a.MyMalloc(6 * sizeof(int));
 			short* aliBaba = (short*)a.MyMalloc(3 * sizeof(short));
-			char* Alladin = a.MyMalloc(8 * sizeof(char));
+			char* Alladin = (char*)a.MyMalloc(8 * sizeof(char));
 
 			a.MyFree(foo);
 			a.MyFree(aliBaba);
@@ -107,6 +108,44 @@ namespace Allocator_TEST
 			a.MyFree(bar);
 
 			Assert::IsTrue(a.isEmpty());
+		}
+
+		TEST_METHOD(Allocate_del_allocate)
+		{
+			Allocator a(100);
+			
+			double* foo = (double*)a.MyMalloc(87 * sizeof(double));
+			a.MyFree(foo);
+			
+			int* bar = (int*)a.MyMalloc(87 * sizeof(int));
+			
+			Assert::IsNotNull(bar);
+		}
+
+		TEST_METHOD(Allocate_small_pieces)
+		{
+			Allocator a(100);
+
+			double** foo = new double*[32];
+
+			for (size_t i = 0; i < 32;++i)
+				foo[i] = (double*)a.MyMalloc(sizeof(double));
+
+			for (size_t i = 0; i < 32; ++i)
+				a.MyFree(foo[i]);
+		}
+
+		TEST_METHOD(Is_from_allocator)
+		{
+			Allocator a(100);
+
+			double* foo = (double*)a.MyMalloc(sizeof(double));
+			Assert::IsNotNull(foo);
+			Assert::IsTrue(a.isFromMe(foo));
+			a.MyFree(foo);
+
+			int* bar = new int;
+			Assert::IsFalse(a.isFromMe(bar));
 		}
 	};
 }

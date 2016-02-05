@@ -17,15 +17,23 @@ private:
 	size_t BlockSize;
 	size_t usedSpace;
 	bool empty;
+	bool full;
 public:
 	Allocator(size_t size, size_t BlockSize = 8);
 	virtual ~Allocator();
 
-	char* MyMalloc(const int memSize);
+	//if invalid argument or no space
+	//return NULL 
+	void* MyMalloc(const int memSize);
+
+	//if invalid argument 
+	//undefined behavior
 	void MyFree(void* p);
+
+	inline bool isEmpty();
+	inline bool isFromMe(void* p);
+	inline bool isFull();
 private:
 	inline bool isAllocated(uint* p);
-public:
-	inline bool isEmpty();
 };
 

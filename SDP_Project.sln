@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Allocator", "Allocator\Allo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Allocator_TEST", "Allocator_TEST\Allocator_TEST.vcxproj", "{1ACC844D-02D2-43D4-B6B5-FFC965A87D50}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomAllocator", "CustomAllocator\CustomAllocator.vcxproj", "{BBC6D38A-7389-4A5E-AC21-AA4A21E31A73}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TEST_Custom_Allocator", "TEST_Custom_Allocator\TEST_Custom_Allocator.vcxproj", "{D76C7A92-6312-44EB-BF38-447C5FCDCB2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -27,6 +31,14 @@ Global
 		{1ACC844D-02D2-43D4-B6B5-FFC965A87D50}.Debug|Win32.Build.0 = Debug|Win32
 		{1ACC844D-02D2-43D4-B6B5-FFC965A87D50}.Release|Win32.ActiveCfg = Release|Win32
 		{1ACC844D-02D2-43D4-B6B5-FFC965A87D50}.Release|Win32.Build.0 = Release|Win32
+		{BBC6D38A-7389-4A5E-AC21-AA4A21E31A73}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BBC6D38A-7389-4A5E-AC21-AA4A21E31A73}.Debug|Win32.Build.0 = Debug|Win32
+		{BBC6D38A-7389-4A5E-AC21-AA4A21E31A73}.Release|Win32.ActiveCfg = Release|Win32
+		{BBC6D38A-7389-4A5E-AC21-AA4A21E31A73}.Release|Win32.Build.0 = Release|Win32
+		{D76C7A92-6312-44EB-BF38-447C5FCDCB2A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D76C7A92-6312-44EB-BF38-447C5FCDCB2A}.Debug|Win32.Build.0 = Debug|Win32
+		{D76C7A92-6312-44EB-BF38-447C5FCDCB2A}.Release|Win32.ActiveCfg = Release|Win32
+		{D76C7A92-6312-44EB-BF38-447C5FCDCB2A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

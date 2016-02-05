@@ -1,4 +1,5 @@
 #include "Allocator.h"
+#include <assert.h>
 
 #define HEADER sizeof(uint)
 
@@ -9,6 +10,7 @@ Allocator::Allocator(size_t size, size_t BlockSize)
 	this->size = size * sizeof(uint);
 	block = new uint[size];
 	empty = true;
+	full = false;
 	usedSpace = 2 * HEADER;
 	this->BlockSize = BlockSize;
 
@@ -23,7 +25,7 @@ Allocator::~Allocator()
 }
 
 
-char* Allocator::MyMalloc(const int memSize)
+void* Allocator::MyMalloc(const int memSize)
 {
 	if (memSize <= 0)
 		return NULL;
@@ -38,7 +40,7 @@ char* Allocator::MyMalloc(const int memSize)
 	if ((memSize / BlockSize) * sizeof(uint) > size - usedSpace)
 		return NULL;
 
-	size_t indexMem = size / HEADER;
+	size_t indexMem = size / sizeof(uint);
 
 	//Try to find a block to fit the allocation
 	size_t i = 0;
@@ -46,18 +48,18 @@ char* Allocator::MyMalloc(const int memSize)
 	{
 		if (isAllocated(&block[i]))
 		{
-			i += (size_t)block[i] / HEADER;
+			i += (size_t)block[i] / sizeof(uint);
 		}
 		else
 		{
 			if (block[i] < totalMemory)
-				i += (size_t)block[i] / HEADER;
+				i += (size_t)block[i] / sizeof(uint);
 			else
 			{
 				if (empty)
 					empty = false;
 
-				if (block[i] - totalMemory * HEADER <= 2 * HEADER)
+				if (block[i] - totalMemory * sizeof(uint) <= 2 * HEADER)
 				{
 					usedSpace += block[i] - 2 * HEADER;
 					++block[i];
@@ -73,7 +75,10 @@ char* Allocator::MyMalloc(const int memSize)
 					block[i + totalMemory] = oldMem - totalMemory * HEADER;
 					block[i + oldMem / HEADER - 1] = oldMem - totalMemory * HEADER;
 				}
-				return (char*)(&block[i + 1]);
+				if (usedSpace == size)
+					full = true;
+
+				return (void*)(&block[i + 1]);
 			}
 		}
 	}
@@ -84,48 +89,66 @@ char* Allocator::MyMalloc(const int memSize)
 
 void Allocator::MyFree(void* p)
 {
-	uint* foo = (uint*)p;
 	if (!p)
 		return;
 
-	if (!isAllocated(foo - 1) || !isAllocated(foo - 1 + *(foo - 1) / sizeof(uint)-1))
+	uint* pTarget = (uint*)p;
+
+	size_t thisSize = *(pTarget - 1) / sizeof(uint);
+
+	if (!isAllocated(pTarget - 1) || !isAllocated(pTarget - 1 + thisSize - 1)
+		|| *(pTarget - 1) > size)
 		throw "360 no skope";
 
-	*(foo - 1) -= 1;
-	*(foo - 1 + *(foo - 1) / sizeof(uint)-1) -= 1;
-	usedSpace -= *(foo - 1) - 2 * HEADER;
+	//Set the block as free
+	*(pTarget - 1) -= 1;
+	*(pTarget - 1 + thisSize-1) -= 1;
 
-	uint* bar = foo;
+	//Update the capacity 
+	usedSpace -= *(pTarget - 1) - 2 * HEADER;
 
-	if (!isAllocated(foo - 2) && foo - 1 != block)
+	uint* pStart = pTarget - 1;
+
+	if (!isAllocated(pTarget - 2) && pTarget - 1 != block)
 	{
 		//Put the size of the new block at the start of it
-		*(foo - *(foo - 2) / sizeof(uint)-1) += *(foo - 1);
+		*(pTarget - *(pTarget - 2) / sizeof(uint)-1) += *(pTarget - 1);
 
 		//Put the size of the new block at the end of it
-		*(foo - 1 + *(foo - 1) / sizeof(uint)-1) = *(foo - *(foo - 2) / sizeof(uint)-1);
+		*(pTarget - 1 + thisSize - 1) = *(pTarget - *(pTarget - 2) / sizeof(uint)-1);
 
 		//Get a pointer to the new start
-		bar = foo - *(foo - 2) / sizeof(uint)-1;
+		pStart = pTarget - *(pTarget - 2) / sizeof(uint)-1;
+
 		usedSpace -= 2 * HEADER;
 	}
 
-	if (!isAllocated(foo - 1 + *(foo - 1) / sizeof(uint))
-		&& foo - 1 + *(foo - 1) / sizeof(uint)-1 != block + size - 1)
+	if (!isAllocated(pTarget - 1 + thisSize)
+		&& pTarget - 1 + thisSize-1 != block + size - 1)
 	{
 		//Get the size of the next empty block
-		uint newTail = *(foo - 1 + *(foo - 1) / sizeof(uint)) / sizeof(uint);
+		uint newTail = *(pTarget - 1 + thisSize) / sizeof(uint);
 
 		//Put the size of the new block at the end of it
-		*(foo - 1 + *(foo - 1) / sizeof(uint)+newTail - 1) += *bar;
+		*(pTarget - 1 + thisSize + newTail - 1) += *pStart;
 
 		//Put the size of the new block at the start of it
-		*bar = *(foo - 1 + *(foo - 1) / sizeof(uint)+newTail - 1);
+		*pStart = *(pTarget - 1 + thisSize + newTail - 1);
+
 		usedSpace -= 2 * HEADER;
 	}
 
 	if (usedSpace == 2 * HEADER)
 		empty = true;
+
+	if (full)
+		full = false;
+
+	bool emptyChecker = true;
+	if (empty && block[BlockSize / sizeof(uint)-1] != size - (BlockSize / sizeof(uint)-1))
+		emptyChecker = false;
+
+	assert(emptyChecker);
 }
 
 
@@ -144,4 +167,20 @@ inline bool Allocator::isEmpty()
 		return true;
 	else
 		return false;
+}
+
+
+inline bool Allocator::isFromMe(void* p)
+{
+	if (p >= block && p <= block + size / sizeof(uint)-1)
+		return true;
+	return false;
+}
+
+
+inline bool Allocator::isFull()
+{
+	if (full)
+		return true;
+	return false;
 }
