@@ -17,9 +17,9 @@ private:
 	Allocator Gigantic;
 public:
 	BossAllocator();
-	virtual ~BossAllocator();
+	~BossAllocator();
 	void* MyMalloc(const int);
-	void MyFree(void*);
+	void MyFree(char*);
 };
 
 
@@ -29,4 +29,4 @@ BOSS_API void* MyMalloc(const int memSize);
 
 //if invalid argument 
 //undefined behavior
-BOSS_API void MyFree(void* p);
+BOSS_API void MyFree(char* p);

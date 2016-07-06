@@ -32,7 +32,7 @@ void* BossAllocator::MyMalloc(const int memSize)
 }
 
 
-void BossAllocator::MyFree(void* p)
+void BossAllocator::MyFree(char* p)
 {
 	//*Target <= 3 * DSIZE && Small.isFromMe(p) ????
 	if (Small.isFromMe(p))
@@ -52,7 +52,7 @@ void* MyMalloc(const int memSize)
 	return GOUEM.MyMalloc(memSize);
 }
 
-void MyFree(void* p)
+void MyFree(char* p)
 {
 	GOUEM.MyFree(p);
 }

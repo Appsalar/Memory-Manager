@@ -86,6 +86,9 @@
       <Project>{bbc6d38a-7389-4a5e-ac21-aa4a21e31a73}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TempAllocator.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

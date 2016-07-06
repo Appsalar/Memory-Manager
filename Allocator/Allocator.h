@@ -20,27 +20,27 @@ private:
 	bool full;
 public:
 	Allocator(size_t size, size_t BlockSize = 8);
-	virtual ~Allocator();
+	~Allocator();
 
-	//if invalid argument or no space
+	//if invalid argument or no space 
 	//return NULL 
 	void* MyMalloc(const int memSize);
 
 	//if invalid argument 
-	//undefined behavior
-	void MyFree(void* p);
+	//undefined behavior 
+	void MyFree(char* p);
 
-	//if the allocator is empty
-	//return true
+	//if the allocator is empty 
+	//return true 
 	inline bool isEmpty();
 
-	//if a pointer could be
-	//from that allocator
-	//return true
+	//if a pointer could be 
+	//from that allocator 
+	//return true 
 	inline bool isFromMe(void* p);
 
-	//if the allocator is full
-	//return true
+	//if the allocator is full 
+	//return true 
 	inline bool isFull();
 private:
 	inline bool isAllocated(uint* p);

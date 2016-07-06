@@ -26,8 +26,8 @@ namespace TEST_Custom_Allocator
 			Assert::IsNotNull(foo);
 			Assert::IsNotNull(bar);
 
-			MyFree(foo);
-			MyFree(bar);
+			MyFree((char*)foo);
+			MyFree((char*)bar);
 		}
 
 		TEST_METHOD(Test_allocate_many_times)

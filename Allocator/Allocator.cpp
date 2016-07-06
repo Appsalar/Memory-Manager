@@ -3,8 +3,8 @@
 
 #define HEADER sizeof(uint)
 
-//Creating allocator with capacity of
-//size * sizeof(double) bites
+//Creating allocator with capacity of 
+//size * sizeof(double) bites 
 Allocator::Allocator(size_t size, size_t BlockSize)
 {
 	this->size = size * sizeof(uint);
@@ -14,7 +14,7 @@ Allocator::Allocator(size_t size, size_t BlockSize)
 	usedSpace = 2 * HEADER;
 	this->BlockSize = BlockSize;
 
-	//Set the header and the footer
+	//Set the header and the footer 
 	block[0] = this->size;
 	block[size - 1] = this->size;
 }
@@ -37,7 +37,7 @@ void* Allocator::MyMalloc(const int memSize)
 	size_t adjustment = memSize % BlockSize ? 1 : 0;
 	adjustment += 2;
 
-	//Calculate the total memory that could be allocated
+	//Calculate the total memory that could be allocated 
 	size_t totalMemory = memSize / BlockSize + adjustment;
 
 	//Check if there is enough memory 
@@ -46,11 +46,11 @@ void* Allocator::MyMalloc(const int memSize)
 
 	size_t indexMem = size / sizeof(uint);
 
-	//Try to find a block to fit the allocation
+	//Try to find a block to fit the allocation 
 	size_t i = 0;
 	while (i < indexMem - 2)
 	{
-		//If the current block is allocated go to the next one
+		//If the current block is allocated go to the next one 
 		if (isAllocated(&block[i]))
 		{
 			i += (size_t)block[i] / sizeof(uint);
@@ -58,7 +58,7 @@ void* Allocator::MyMalloc(const int memSize)
 		else
 		{
 			//If there is not enough space in the current block 
-			//go to the next one
+			//go to the next one 
 			if (block[i] < totalMemory)
 				i += (size_t)block[i] / sizeof(uint);
 			else
@@ -73,7 +73,7 @@ void* Allocator::MyMalloc(const int memSize)
 					//Update the capacity 
 					usedSpace += block[i] - 2 * HEADER;
 
-					//Set the block as allocated
+					//Set the block as allocated 
 					++block[i];
 					++block[i + totalMemory - 1];
 				}
@@ -82,22 +82,22 @@ void* Allocator::MyMalloc(const int memSize)
 					//Update the capacity 
 					usedSpace += totalMemory * HEADER;
 
-					//Get the old size of the block
+					//Get the old size of the block 
 					uint oldMem = block[i];
 
-					//Set the block as allocated
+					//Set the block as allocated 
 					block[i] = totalMemory * HEADER + 1;
 					block[i + totalMemory - 1] = totalMemory * HEADER + 1;
 
-					//Update the new free block in the block after the allocation
+					//Update the new free block in the block after the allocation 
 					block[i + totalMemory] = oldMem - totalMemory * HEADER;
 					block[i + oldMem / HEADER - 1] = oldMem - totalMemory * HEADER;
 				}
-				//Check if the allocator is full
+				//Check if the allocator is full 
 				if (usedSpace == size)
 					full = true;
 
-				//return pointer to the first 8 bits after the header
+				//return pointer to the first 8 bits after the header 
 				return (void*)(&block[i + 1]);
 			}
 		}
@@ -107,10 +107,10 @@ void* Allocator::MyMalloc(const int memSize)
 }
 
 
-void Allocator::MyFree(void* p)
+void Allocator::MyFree(char* p)
 {
 	//if NULL 
-	//return
+	//return 
 	if (!p)
 		return;
 
@@ -120,14 +120,14 @@ void Allocator::MyFree(void* p)
 
 	//throw sth if the block doesn't pass for an allocated one
 	// still there could be an invalid argument which passes 
-	// in that case the behavior is undefined
+	// in that case the behavior is undefined 
 	if (!isAllocated(pTarget - 1) || !isAllocated(pTarget - 1 + thisSize - 1)
 		|| *(pTarget - 1) > size)
 		throw "360 no skope";
 
-	//Set the block as free
+	//Set the block as free 
 	*(pTarget - 1) -= 1;
-	*(pTarget - 1 + thisSize-1) -= 1;
+	*(pTarget - 1 + thisSize - 1) -= 1;
 
 	//Update the capacity 
 	usedSpace -= *(pTarget - 1) - 2 * HEADER;
