@@ -17,7 +17,7 @@ public:
 public:
 	TempAllocator()
 	{
-		pMem = new Allocator(1000 * 1000);
+		pMem = new Allocator(4 * 1000 * 1000);
 	}
 
 	TempAllocator(size_type size)
