@@ -69,10 +69,10 @@ namespace Allocator_TEST
 
 		TEST_METHOD(Allocate_multiple_times)
 		{
-			Allocator a(100);
+			Allocator a(1000);
 
 			double* foo = (double*)a.MyMalloc(30 * sizeof(double));
-			int* bar = (int*)a.MyMalloc(6 * sizeof(int));
+			int* bar = (int*)a.MyMalloc(120 * sizeof(int));
 			short* aliBaba = (short*)a.MyMalloc(3 * sizeof(short));
 
 			Assert::IsNotNull(foo);

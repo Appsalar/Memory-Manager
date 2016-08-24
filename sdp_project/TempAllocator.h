@@ -37,9 +37,9 @@ public:
 
 	~TempAllocator() {}
 
-	pointer allocate(size_type size)
+	pointer allocate(size_t size)
 	{
-		pointer ptr = (pointer)pMem->MyMalloc(size * sizeof(value_type));
+		pointer ptr = (pointer)pMem->MyMalloc(size * sizeof(T));
 		return ptr;
 	}
 

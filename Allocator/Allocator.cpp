@@ -59,7 +59,7 @@ void* Allocator::MyMalloc(const int memSize)
 		{
 			//If there is not enough space in the current block 
 			//go to the next one 
-			if (block[i] < totalMemory)
+			if (block[i] < totalMemory * sizeof(uint))
 				i += (size_t)block[i] / sizeof(uint);
 			else
 			{
@@ -73,9 +73,10 @@ void* Allocator::MyMalloc(const int memSize)
 					//Update the capacity 
 					usedSpace += block[i] - 2 * HEADER;
 
+					uint tmp = block[i] / sizeof(uint);
 					//Set the block as allocated 
 					++block[i];
-					++block[i + totalMemory - 1];
+					++block[i + tmp - 1];
 				}
 				else
 				{

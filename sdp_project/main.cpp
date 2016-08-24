@@ -11,7 +11,7 @@
 
 int main()
 {
-	TempAllocator<int> a;
+	/*TempAllocator<int> a;
 
 	int * p = a.allocate(4);
 
@@ -19,16 +19,17 @@ int main()
 
 	std::cout << *p << std::endl;
 
-	PRINT;
+	int* f = a.allocate(10);
 
-	std::vector<int, TempAllocator<int>> vec(200);
+	a.deallocate(p, 4);
+	PRINT;*/
 
-	for (size_t i = 0; i < 100; i++)
+	std::vector<int, TempAllocator<int>> vec;
+
+	for (size_t i = 0; i < 1000; i++)
 		vec.push_back(i);
 
-	vec.erase(vec.begin(),vec.begin() + 200);
-
-	for (size_t i = 0; i < 100; i++)
+	for (size_t i = 0; i < 1000; i++)
 		std::cout << vec[i] << std::endl;
 
 	PRINT;
